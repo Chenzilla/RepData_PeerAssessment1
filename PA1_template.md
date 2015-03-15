@@ -41,11 +41,49 @@ median(stepsTakenPerDay$steps)
 ## [1] 10765
 ```
 ## What is the average daily activity pattern?
+We first calculate the average number of steps taken per time interval using the aggregate function as follows:
 
+```r
+stepsTakenPerInterval<-aggregate(steps~interval, data, FUN=mean, na.rm=TRUE)
+```
+We then write a function 
 
+```r
+intToHHMM <- function (i) {sprintf("%02d:%02d", i %/% 100, i %% 100)}
+```
+that returns each interval as a proper time string in HH:MM format. We convert these strings to proper dates using strptime(), and save these values to a newInt variable:
+
+```r
+newInt<-strptime(intToHHMM(stepsTakenPerInterval$interval), "%H:%M")
+```
+Finally, we plot the activity graph using: 
+
+```r
+plot(newInt, stepsTakenPerInterval$steps, type="l")
+```
+
+![](PA1_template_files/figure-html/unnamed-chunk-8-1.png) 
+
+We can then find the max interval of time using
+
+```r
+intToHHMM(stepsTakenPerInterval[which.max(stepsTakenPerInterval$steps), "interval"])
+```
+
+```
+## [1] "08:35"
+```
 
 ## Imputing missing values
+In order to find the total number of rows with NA, we use:
 
+```r
+sum(is.na(data$steps))
+```
+
+```
+## [1] 2304
+```
 
 
 ## Are there differences in activity patterns between weekdays and weekends?
